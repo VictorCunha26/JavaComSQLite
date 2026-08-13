@@ -8,22 +8,39 @@ import java.util.Scanner;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     private static final String connectionString = "jdbc:sqlite:banco.db";
-    static void main() throws Exception{
+    static void main() throws Exception {
         //criar a tabela de alunos, caso ela não exista
         criartabela();
+
         Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Digite seu nome: ");
-        var nome = scanner.nextLine();
+        int opcao = 0;
 
-        System.out.println("Digite seu email: ");
-        var email = scanner.nextLine();
+        do {
+            exibirMenu();
+            System.out.println("Digite a opção: ");
+            opcao = scanner.nextInt();
 
-        System.out.println("Digite seu idade: ");
-        var idade = scanner.nextInt();
 
-        inserir(nome, email, idade);
-        consultarTodos();
+            switch (opcao) {
+                case 1 -> inserir();
+                case 2 -> consultarTodos();
+            }
+        }while(opcao != 0 );
+
+    }
+
+    public static void exibirMenu(){
+        System.out.println();
+        System.out.println("============================");
+        System.out.println("      SISTEMA DE ALUNOS");
+        System.out.println("============================");
+        System.out.println("1 - Cadastrar aluno");
+        System.out.println("2 - Listar alunos");
+        System.out.println("3 - Buscar aluno");
+        System.out.println("4 - Atualizar aluno");
+        System.out.println("5 - Excluir aluno");
+        System.out.println("6 - Sair");
     }
 
     private static void criartabela() {
@@ -43,10 +60,10 @@ public class Main {
         }
     }
 
-    private static void inserir(String nome, String email, int idade){
+    private static void inserir(){
 
         String sql = "INSERT INTO Alunos (nome,email,idade)";
-        sql += String.format("VALUES ('%s', '%s', %d)", nome, email, idade);
+        sql += "VALUES('José', 'jodr@teste.com', 40)";
 
         try (var connection = DriverManager.getConnection(connectionString)) {
             var statement = connection.createStatement();
