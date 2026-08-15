@@ -25,6 +25,8 @@ public class Main {
             switch (opcao) {
                 case 1 -> inserir();
                 case 2 -> consultarTodos();
+                case 3 -> buscarAluno();
+                case 4 -> atualizarAluno();
             }
         }while(opcao != 0 );
 
@@ -62,12 +64,25 @@ public class Main {
 
     private static void inserir(){
 
-        String sql = "INSERT INTO Alunos (nome,email,idade)";
-        sql += "VALUES('José', 'jodr@teste.com', 40)";
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite seu nome: ");
+        String nome = scanner.next();
+
+        System.out.println("Digite seu email: ");
+        String email = scanner.next();
+
+        System.out.println("Digite seu idade: ");
+        int idade =  scanner.nextInt();
+
+        String sql = "INSERT INTO Alunos (nome,email,idade) VALUES (?, ?, ?)";
 
         try (var connection = DriverManager.getConnection(connectionString)) {
-            var statement = connection.createStatement();
-            statement.executeUpdate(sql);
+            var statement = connection.prepareStatement(sql);
+            statement.setString(1, nome);
+            statement.setString(2, email);
+            statement.setInt(3, idade);
+            statement.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erro ao executar a inserção: " + e.getMessage());
         }
@@ -93,6 +108,36 @@ public class Main {
 
         } catch (SQLException e) {
             System.out.println("Erro ao executar a inserção: " + e.getMessage());
+        }
+    }
+
+    private static void buscarAluno(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite o id do aluno: ");
+        int id  =  scanner.nextInt();
+        String sql = ("SELECT *  FROM alunos WHERE id = ?");
+
+        try (var connection = DriverManager.getConnection(connectionString)){
+            var statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            var resultado = statement.executeQuery();
+
+            if (resultado.next()){
+                String nome = resultado.getString("nome");
+                String email = resultado.getString("email");
+                int idade = resultado.getInt("idade");
+
+                System.out.println("Aluno Encontrado:");
+                System.out.println("Nome: " + nome);
+                System.out.println("Email: " + email);
+                System.out.println("Idade: " + idade);
+            } else{
+                System.out.println("Nenhum aluno encontrado com esse ID");
+            }
+        } catch (SQLException e){
+            System.out.println("Error ao buscar aluno: " + e.getMessage());
         }
     }
 }
