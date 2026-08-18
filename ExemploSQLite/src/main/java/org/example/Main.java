@@ -27,6 +27,7 @@ public class Main {
                 case 2 -> consultarTodos();
                 case 3 -> buscarAluno();
                 case 4 -> atualizarAluno();
+                case 5 -> excluirAluno();
             }
         }while(opcao != 0 );
 
@@ -175,6 +176,30 @@ public class Main {
 
         } catch (SQLException e){
             System.out.println("Erro ao atualizar aluno: " + e.getMessage());
+        }
+    }
+
+    private static void excluirAluno(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite ID do aluno que quer excluir: ");
+        int id = scanner.nextInt();
+
+        String sql = "DELETE FROM Alunos WHERE id = ?";
+
+        try(var connection = DriverManager.getConnection(connectionString)){
+            var statement = connection.prepareStatement(sql);
+            statement.setInt(1, id);
+
+            int linhas = statement.executeUpdate();
+
+            if (linhas > 0){
+                System.out.println("Aluno excluido com sucesso!");
+            } else {
+                System.out.println("ID nao existe");
+            }
+        } catch (SQLException e){
+            System.out.println("Erro ao excluir aluno: " + e.getMessage());
         }
     }
 }
