@@ -140,4 +140,41 @@ public class Main {
             System.out.println("Error ao buscar aluno: " + e.getMessage());
         }
     }
+
+    private static void atualizarAluno(){
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite ID do aluno que você quer atualizar: ");
+        int id = scanner.nextInt();
+
+        System.out.println("Digite novo nome: ");
+        String novoNome = scanner.next();
+
+        System.out.println("Digite novo email: ");
+        String novoEmail = scanner.next();
+
+        System.out.println("Digite nova idade: ");
+        int novaIdade = scanner.nextInt();
+
+        String sql = "UPDATE Alunos SET nome = ?, email = ?, idade = ? WHERE id = ?";
+
+        try(var connection = DriverManager.getConnection(connectionString)){
+            var statement = connection.prepareStatement(sql);
+            statement.setString(1, novoNome);
+            statement.setString(2, novoEmail);
+            statement.setInt(3, novaIdade);
+            statement.setInt(4, id);
+
+            int linhas = statement.executeUpdate();
+
+            if (linhas > 0){
+                System.out.println("Aluno atualizado com sucesso!");
+            } else{
+                System.out.println("ID não existe");
+            }
+
+        } catch (SQLException e){
+            System.out.println("Erro ao atualizar aluno: " + e.getMessage());
+        }
+    }
 }
