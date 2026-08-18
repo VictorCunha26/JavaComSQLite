@@ -29,7 +29,7 @@ public class Main {
                 case 4 -> atualizarAluno();
                 case 5 -> excluirAluno();
             }
-        }while(opcao != 0 );
+        }while(opcao != 0 && opcao != 6);
 
     }
 
